@@ -5,7 +5,7 @@ services:
       dockerfile: dockerfile
     container_name: github-backup
     environment:
-      GH_TOKEN: "${GH_TOKEN}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
       GITHUB_OWNERS: "${GITHUB_OWNERS}"
       DAILY_RETENTION_DAYS: "${DAILY_RETENTION_DAYS}"
       ENABLE_DAILY: "${ENABLE_DAILY}"
