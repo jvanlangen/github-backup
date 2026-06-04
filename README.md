@@ -52,7 +52,7 @@ Copy-Item example.env .env
 Edit `.env` and fill in your own values:
 
 ```env
-GH_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxxxxxxxx
+GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxxxxxxxx
 GITHUB_OWNERS=my-company,my-user
 HOST_BACKUP_PATH=C:/Dev/GithubBackups
 
@@ -139,7 +139,7 @@ services:
       dockerfile: dockerfile
     container_name: github-backup
     environment:
-      GH_TOKEN: "${GH_TOKEN}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
       GITHUB_OWNERS: "${GITHUB_OWNERS}"
       DAILY_RETENTION_DAYS: "${DAILY_RETENTION_DAYS}"
       ENABLE_DAILY: "${ENABLE_DAILY}"
