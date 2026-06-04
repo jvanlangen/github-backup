@@ -54,7 +54,7 @@ Edit `.env` and fill in your own values:
 ```env
 GITHUB_TOKEN=github_pat_xxxxxxxxxxxxxxxxxxxxxxxxx
 GITHUB_OWNERS=my-company,my-user
-HOST_BACKUP_PATH=C:/Dev/GithubBackups
+HOST_BACKUP_PATH=C:/Dev/GithubBackups    <-- windows/linux path
 
 DAILY_RETENTION_DAYS=14
 ENABLE_DAILY=true
@@ -62,10 +62,6 @@ ENABLE_WEEKLY=true
 ENABLE_MONTHLY=true
 TZ=Europe/Amsterdam
 ```
-
-Do **not** commit `.env`.
-
-Commit `example.env` instead.
 
 ---
 
