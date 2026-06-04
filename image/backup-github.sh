@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${GH_TOKEN:?GH_TOKEN is required}"
+: "${GITHUB_TOKEN:?GITHUB_TOKEN is required}"
 : "${BACKUP_ROOT:=/backups}"
 : "${DAILY_RETENTION_DAYS:=14}"
 : "${TZ:=Europe/Amsterdam}"
@@ -58,7 +58,7 @@ make_authenticated_url() {
     local repo_url="$1"
 
     repo_url="$(make_clean_url "$repo_url")"
-    echo "${repo_url/https:\/\//https:\/\/x-access-token:${GH_TOKEN}@}"
+    echo "${repo_url/https:\/\//https:\/\/x-access-token:${GITHUB_TOKEN}@}"
 }
 
 backup_owner() {
