@@ -1,0 +1,8 @@
+.env
+.git
+.gitignore
+backups
+GithubBackups
+*.log
+*.bak
+*.tmp

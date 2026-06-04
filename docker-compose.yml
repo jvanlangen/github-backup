@@ -1,0 +1,17 @@
+services:
+  github-backup:
+    build:
+      context: ./image
+      dockerfile: dockerfile
+    container_name: github-backup
+    environment:
+      GH_TOKEN: "${GH_TOKEN}"
+      GITHUB_OWNERS: "${GITHUB_OWNERS}"
+      DAILY_RETENTION_DAYS: "${DAILY_RETENTION_DAYS}"
+      ENABLE_DAILY: "${ENABLE_DAILY}"
+      ENABLE_WEEKLY: "${ENABLE_WEEKLY}"
+      ENABLE_MONTHLY: "${ENABLE_MONTHLY}"
+      TZ: "${TZ:-Europe/Amsterdam}"
+    volumes:
+      - "${HOST_BACKUP_PATH}:/backups"
+    restart: "no"

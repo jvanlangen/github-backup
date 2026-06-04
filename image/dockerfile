@@ -1,0 +1,18 @@
+FROM alpine:3.20
+
+RUN apk add --no-cache \
+    bash \
+    git \
+    github-cli \
+    openssh-client \
+    ca-certificates \
+    rsync \
+    coreutils \
+    findutils \
+    tzdata
+
+COPY backup-github.sh /usr/local/bin/backup-github.sh
+
+RUN chmod +x /usr/local/bin/backup-github.sh
+
+ENTRYPOINT ["/usr/local/bin/backup-github.sh"]
