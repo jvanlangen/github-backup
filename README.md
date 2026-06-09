@@ -98,7 +98,7 @@ crontab -e
 Example: run every night at 02:00:
 
 ```cron
-0 2 * * * cd /opt/github-backup && docker compose run --rm github-backup >> ./backup.log 2>&1
+0 2 * * * /var/docker/github-backup/run.sh >/dev/null 2>&1
 ```
 
 If cron cannot find Docker, check the Docker path:
@@ -110,7 +110,7 @@ which docker
 Then use the full path:
 
 ```cron
-0 2 * * * cd /opt/github-backup && /usr/bin/docker compose run --rm github-backup >> ./backup.log 2>&1
+0 2 * * * /var/docker/github-backup/run.sh >/dev/null 2>&1
 ```
 
 `/opt/github-backup` should contain:
