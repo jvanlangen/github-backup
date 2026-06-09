@@ -1,10 +1,64 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
+
+: "${BACKUP_ROOT:=/backups}"
+: "${TZ:=Europe/Amsterdam}"
+
+export TZ
+
+DETAIL_LOG="${DETAIL_LOG:-$BACKUP_ROOT/backup-latest.log}"
+RUN_LOG="${RUN_LOG:-$BACKUP_ROOT/backup-runs.log}"
+
+mkdir -p "$BACKUP_ROOT"
+
+# Bewaar originele stdout/stderr, zodat we aan het eind 1 summary-regel kunnen tonen.
+exec 3>&1
+exec 4>&2
+
+# Detail-log wordt per run overschreven.
+: > "$DETAIL_LOG"
+exec > "$DETAIL_LOG" 2>&1
+
+START_TS="$(date '+%Y-%m-%d %H:%M:%S')"
+ERROR_MESSAGE=""
+
+on_error() {
+    local exit_code=$?
+    ERROR_MESSAGE="line $LINENO: command failed: $BASH_COMMAND"
+    return "$exit_code"
+}
+
+on_exit() {
+    local exit_code=$?
+    local end_ts
+    local result_line
+
+    end_ts="$(date '+%Y-%m-%d %H:%M:%S')"
+
+    if [[ "$exit_code" -eq 0 ]]; then
+        result_line="[$end_ts] result=success started=\"$START_TS\""
+    else
+        if [[ -z "$ERROR_MESSAGE" ]]; then
+            ERROR_MESSAGE="exit_code=$exit_code"
+        fi
+
+        result_line="[$end_ts] result=failed started=\"$START_TS\" error=\"$ERROR_MESSAGE\""
+    fi
+
+    # Eén regel per run in de compacte history-log.
+    echo "$result_line" >> "$RUN_LOG"
+
+    # Ook één regel naar stdout, handig voor cron/docker logs.
+    echo "$result_line" >&3
+
+    exit "$exit_code"
+}
+
+trap on_error ERR
+trap on_exit EXIT
 
 : "${GITHUB_TOKEN:?GITHUB_TOKEN is required}"
-: "${BACKUP_ROOT:=/backups}"
 : "${DAILY_RETENTION_DAYS:=14}"
-: "${TZ:=Europe/Amsterdam}"
 
 # Supports:
 # - GITHUB_OWNER=my-user-or-org
@@ -15,8 +69,6 @@ set -euo pipefail
 ENABLE_DAILY="${ENABLE_DAILY:-false}"
 ENABLE_WEEKLY="${ENABLE_WEEKLY:-false}"
 ENABLE_MONTHLY="${ENABLE_MONTHLY:-false}"
-
-export TZ
 
 TODAY="$(date +%F)"
 MONTH="$(date +%Y-%m)"
@@ -196,6 +248,8 @@ main() {
 
     log "Starting GitHub backup"
     log "Backup root inside container: $BACKUP_ROOT"
+    log "Detail log: $DETAIL_LOG"
+    log "Run log: $RUN_LOG"
 
     IFS=',' read -ra OWNERS <<< "$GITHUB_OWNERS"
 
